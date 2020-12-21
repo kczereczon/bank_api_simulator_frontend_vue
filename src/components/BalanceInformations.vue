@@ -1,0 +1,30 @@
+<template>
+  <div>
+      <md-card >
+        <md-card-header>
+          <div class="md-title">Saldo konta</div>
+        </md-card-header>
+
+        <md-card-content>
+          <div class="md-layout md-alignment-top-center md-gutter">
+            <div class="md-layout-item">
+                <span class="md-title"><md-icon>money</md-icon> {{balance}}</span>
+            </div>
+          </div>
+        </md-card-content>
+            
+      </md-card>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    balance: String
+  }
+}
+</script>
+
+<style>
+
+</style>

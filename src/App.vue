@@ -1,32 +1,41 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+<div>
+    <md-app md-mode="reveal" style="min-height: 100vh;">
+      <md-app-toolbar class="md-primary">
+        <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+          <md-icon>menu</md-icon>
+        </md-button>
+        <span class="md-title">Bank A</span>
+      </md-app-toolbar>
+
+      <md-app-drawer :md-active.sync="menuVisible">
+        <md-toolbar class="md-transparent" md-elevation="0">Menu</md-toolbar>
+
+        <md-list>
+          <md-list-item>
+            <md-icon>person_add</md-icon>
+            <span class="md-list-item-text">Dodaj użytkownika</span>
+          </md-list-item>
+
+          <md-list-item>
+            <md-icon>logout</md-icon>
+            <span class="md-list-item-text">Wyloguj</span>
+          </md-list-item>
+        </md-list>
+      </md-app-drawer>
+
+      <md-app-content>
+        <router-view/>
+      </md-app-content>
+    </md-app>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+export default {
+  name: 'Reveal',
+  data: () => ({
+    menuVisible: false
+  })
 }
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>
