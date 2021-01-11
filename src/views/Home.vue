@@ -12,7 +12,7 @@
         <BalanceInformations :balance="balance[id]" />
       </div>
       <div v-if="id" class="md-layout-item md-size-100">
-        <Operations :id="id" />
+        <Operations @update="update" :id="id" />
       </div>
     </div>
   </div>
@@ -72,6 +72,9 @@ export default {
         console.log(error);
       }
     },
+    update() {
+      this.getBankingInfo();
+    }
   },
 };
 </script>
