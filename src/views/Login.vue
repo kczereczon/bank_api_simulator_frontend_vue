@@ -9,16 +9,29 @@
         <md-card-content>
           <md-field :class="getValidationClass('email')">
             <label for="email">Email</label>
-            <md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
-            <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-            <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
+            <md-input
+              type="email"
+              name="email"
+              id="email"
+              autocomplete="email"
+              v-model="form.email"
+              :disabled="sending"
+            />
+            <span class="md-error" v-if="!$v.form.email.required"
+              >The email is required</span
+            >
+            <span class="md-error" v-else-if="!$v.form.email.email"
+              >Invalid email</span
+            >
           </md-field>
         </md-card-content>
 
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
         <md-card-actions>
-          <md-button type="submit" class="md-primary" :disabled="sending">Zaloguj</md-button>
+          <md-button type="submit" class="md-primary" :disabled="sending"
+            >Zaloguj</md-button
+          >
         </md-card-actions>
       </md-card>
 
@@ -33,6 +46,7 @@
     required,
     email,
   } from 'vuelidate/lib/validators'
+  import axios from "axios";
 
   export default {
     name: 'FormValidation',
@@ -65,25 +79,21 @@
         this.$v.$reset()
         this.form.email = null
       },
-      login () {
+      async login () {
         this.sending = true
 
         // Instead of this timeout, here you can call your API
-        window.setTimeout(() => {
-          this.lastUser = `${this.form.firstName} ${this.form.lastName}`
-          this.userSaved = true
-          this.sending = false
+        let response = await axios.post("http://localhost:8000/api/user/login", {email: this.form.email});
 
-          localStorage.setItem('logged', JSON.stringify({
-              id: 1,
-              name: "Jan Kowalski",
-              email: this.form.email,
-          }));
+        this.lastUser = `${this.form.firstName} ${this.form.lastName}`
+        this.userSaved = true
+        this.sending = false
 
-          this.$router.push({name: "Home"});
+        localStorage.setItem('logged', JSON.stringify(response.data.user));
 
-          this.clearForm()
-        }, 1500)
+        this.$router.push({name: "Home"});
+
+        this.clearForm();
       },
       validateUser () {
         this.$v.$touch()
@@ -97,10 +107,10 @@
 </script>
 
 <style lang="css" scoped>
-  .md-progress-bar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-  }
+.md-progress-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
 </style>

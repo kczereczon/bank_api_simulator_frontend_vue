@@ -11,18 +11,38 @@
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('firstName')">
                 <label for="first-name">First Name</label>
-                <md-input name="first-name" id="first-name" autocomplete="given-name" v-model="form.firstName" :disabled="sending" />
-                <span class="md-error" v-if="!$v.form.firstName.required">The first name is required</span>
-                <span class="md-error" v-else-if="!$v.form.firstName.minlength">Invalid first name</span>
+                <md-input
+                  name="first-name"
+                  id="first-name"
+                  autocomplete="given-name"
+                  v-model="form.firstName"
+                  :disabled="sending"
+                />
+                <span class="md-error" v-if="!$v.form.firstName.required"
+                  >The first name is required</span
+                >
+                <span class="md-error" v-else-if="!$v.form.firstName.minlength"
+                  >Invalid first name</span
+                >
               </md-field>
             </div>
 
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('lastName')">
                 <label for="last-name">Last Name</label>
-                <md-input name="last-name" id="last-name" autocomplete="family-name" v-model="form.lastName" :disabled="sending" />
-                <span class="md-error" v-if="!$v.form.lastName.required">The last name is required</span>
-                <span class="md-error" v-else-if="!$v.form.lastName.minlength">Invalid last name</span>
+                <md-input
+                  name="last-name"
+                  id="last-name"
+                  autocomplete="family-name"
+                  v-model="form.lastName"
+                  :disabled="sending"
+                />
+                <span class="md-error" v-if="!$v.form.lastName.required"
+                  >The last name is required</span
+                >
+                <span class="md-error" v-else-if="!$v.form.lastName.minlength"
+                  >Invalid last name</span
+                >
               </md-field>
             </div>
           </div>
@@ -31,7 +51,13 @@
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('gender')">
                 <label for="gender">Gender</label>
-                <md-select name="gender" id="gender" v-model="form.gender" md-dense :disabled="sending">
+                <md-select
+                  name="gender"
+                  id="gender"
+                  v-model="form.gender"
+                  md-dense
+                  :disabled="sending"
+                >
                   <md-option></md-option>
                   <md-option value="M">M</md-option>
                   <md-option value="F">F</md-option>
@@ -43,29 +69,55 @@
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('age')">
                 <label for="age">Age</label>
-                <md-input type="number" id="age" name="age" autocomplete="age" v-model="form.age" :disabled="sending" />
-                <span class="md-error" v-if="!$v.form.age.required">The age is required</span>
-                <span class="md-error" v-else-if="!$v.form.age.maxlength">Invalid age</span>
+                <md-input
+                  type="number"
+                  id="age"
+                  name="age"
+                  autocomplete="age"
+                  v-model="form.age"
+                  :disabled="sending"
+                />
+                <span class="md-error" v-if="!$v.form.age.required"
+                  >The age is required</span
+                >
+                <span class="md-error" v-else-if="!$v.form.age.maxlength"
+                  >Invalid age</span
+                >
               </md-field>
             </div>
           </div>
 
           <md-field :class="getValidationClass('email')">
             <label for="email">Email</label>
-            <md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
-            <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-            <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
+            <md-input
+              type="email"
+              name="email"
+              id="email"
+              autocomplete="email"
+              v-model="form.email"
+              :disabled="sending"
+            />
+            <span class="md-error" v-if="!$v.form.email.required"
+              >The email is required</span
+            >
+            <span class="md-error" v-else-if="!$v.form.email.email"
+              >Invalid email</span
+            >
           </md-field>
         </md-card-content>
 
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
         <md-card-actions>
-          <md-button type="submit" class="md-primary" :disabled="sending">Create user</md-button>
+          <md-button type="submit" class="md-primary" :disabled="sending"
+            >Create user</md-button
+          >
         </md-card-actions>
       </md-card>
 
-      <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved with success!</md-snackbar>
+      <md-snackbar :md-active.sync="userSaved"
+        >The user {{ lastUser }} was saved with success!</md-snackbar
+      >
     </form>
   </div>
 </template>
@@ -78,6 +130,7 @@
     minLength,
     maxLength
   } from 'vuelidate/lib/validators'
+  import axios from "axios";
 
   export default {
     name: 'FormValidation',
@@ -135,18 +188,21 @@
         this.form.gender = null
         this.form.email = null
       },
-      saveUser () {
+      async saveUser () {
         this.sending = true
-
-        // Instead of this timeout, here you can call your API
-        window.setTimeout(() => {
+        try {
+          await axios.post("http://localhost:8000/api/user", {...this.form, name: this.form.firstName +" "+ this.form.lastName});
           this.lastUser = `${this.form.firstName} ${this.form.lastName}`
           this.userSaved = true
           this.sending = false
-          this.clearForm()
-        }, 1500)
+          this.$router.push({name: "Login"});
+          this.clearForm();
+        } catch (error) {
+          this.sending = false
+          console.log(error.response);
+        }
       },
-      validateUser () {
+      async validateUser () {
         this.$v.$touch()
 
         if (!this.$v.$invalid) {
@@ -158,10 +214,10 @@
 </script>
 
 <style lang="css" scoped>
-  .md-progress-bar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-  }
+.md-progress-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
 </style>

@@ -8,7 +8,7 @@
         <md-card-content>
           <div class="md-layout md-alignment-top-center md-gutter">
             <div class="md-layout-item">
-                <span class="md-title"><md-icon>money</md-icon> {{balance}}</span>
+                <span class="md-title"><md-icon>money</md-icon> {{formatPrice(balance)}} zł</span>
             </div>
           </div>
         </md-card-content>
@@ -20,7 +20,13 @@
 <script>
 export default {
   props: {
-    balance: String
+    balance: Number
+  },
+  methods: {
+    formatPrice(value) {
+        let val = (value/1).toFixed(2).replace('.', ',')
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    }
   }
 }
 </script>

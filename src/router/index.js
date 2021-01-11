@@ -39,13 +39,6 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register,
-    beforeEnter: (to, from, next) => {
-      if (!localStorage.getItem('logged')['isAdmin']) {
-        return router.push({ name: 'Login' });
-      }
-
-      return next();
-    },
   }
 ]
 

@@ -20,9 +20,8 @@
             <div class="md-layout-item md-small-size-100">
               <md-field>
                 <label for="banking-account">Konto bankowe</label>
-                <md-select name="bankingAccount" id="bankingAccount" v-model="form.bankingAccount" md-dense :disabled="sending">
-                  <md-option value="1">73109024021872653386233218</md-option>
-                  <md-option value="2">93109024022648527338391116</md-option>
+                <md-select name="bankingAccount" id="bankingAccount" v-model="id" md-dense :disabled="sending">
+                  <md-option v-for="bankingAccount in bankingAccounts" :key="bankingAccount.id" :value="bankingAccount.id">{{bankingAccount.nrb}}</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -40,10 +39,12 @@
 <script>
 export default {
     name: 'BankingAccountsForm',
+    props: {
+      id: Number,
+      bankingAccounts: Object
+    },
     data: () => ({
-      form: {
-        bankingAccount: 1,
-      },
+      
       bankingAccountChanged: false,
       sending: false,
       user: JSON.parse(localStorage.getItem('logged'))
@@ -58,14 +59,14 @@ export default {
       }
     },
     watch: {
-        "form.bankingAccount": function(newValue) {
+        "bankingAccount": function(newValue) {
             this.sending = true
 
         // Instead of this timeout, here you can call your API
             window.setTimeout(() => {
             this.bankingAccountChanged = true
             this.sending = false
-            this.form.bankingAccount = newValue;
+            this.bankingAccount = newValue;
             this.$emit("bankingAccountChanged", newValue);
             }, 500)
         }
